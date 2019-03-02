@@ -1,0 +1,10 @@
+{
+    "editor.tabSize": 2,
+
+    "eslint.options": {
+        "configFile": ".eslintrc.yml"
+    },
+    "eslint.packageManager": "yarn",
+    "eslint.nodePath": "node_modules",
+    "eslint.autoFixOnSave": true,
+}
