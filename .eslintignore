@@ -1,0 +1,7 @@
+# /node_modules/* and /bower_components/* in the project root are ignored by default
+
+flow-typed/*
+build/*
+
+# for this project do not check files provided by react-scripts
+src/serviceWorker.js

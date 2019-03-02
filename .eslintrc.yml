@@ -1,0 +1,19 @@
+parser: babel-eslint
+extends: airbnb
+plugins:
+  - react-hooks
+settings:
+  import/no-unresolved:
+    caseSensitive: false
+env:
+  browser: true
+  node: true
+  jest: true
+rules:
+  max-len:
+    - warn
+    - code: 100
+  react-hooks/rules-of-hooks:
+    - error
+  react-hooks/exhaustive-deps:
+    - warn
