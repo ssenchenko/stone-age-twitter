@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Logo renders correctly 1`] = `
+.c0 {
+  color: #3f9b41;
+  font-weight: bold;
+  font-size: x-large;
+  margin-left: 20px;
+}
+
+<h1
+  className="c0"
+>
+  Test
+</h1>
+`;

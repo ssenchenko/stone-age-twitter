@@ -2,9 +2,9 @@ import React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import styled, { ThemeProvider } from 'styled-components';
 
-import DefaultTheme from '../../settings/themes';
-import LandingPage from '../screens/Landing/Page';
-import * as routes from '../../settings/routes';
+import DefaultTheme from '../settings/themes';
+import LandingPage from './screens/Landing';
+import * as routes from '../settings/routes';
 
 export const GlobalSettings = styled.div`
   font-family: ${({ theme }) => (theme.general.fontFamily)};

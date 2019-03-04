@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 
-import LandingPage from './Page';
+import SignUpPage from '../SignUp';
 import DefaultTheme from '../../../settings/themes';
 
 test('Landing Page renders without crashing', () => {
@@ -11,7 +11,7 @@ test('Landing Page renders without crashing', () => {
   ReactDOM.render(
     <Router>
       <ThemeProvider theme={DefaultTheme}>
-        <LandingPage />
+        <SignUpPage />
       </ThemeProvider>
     </Router>, div,
   );
