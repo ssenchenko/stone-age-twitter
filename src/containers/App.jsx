@@ -1,9 +1,13 @@
 import React from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import styled, { ThemeProvider } from 'styled-components';
 
 import DefaultTheme from '../settings/themes';
+import Header from './Header';
 import LandingPage from './screens/Landing';
+import SignUpPage from './screens/SignUp';
+import LoginPage from './screens/Login';
+import NoMatch from './screens/404';
 import * as routes from '../settings/routes';
 
 export const GlobalSettings = styled.div`
@@ -14,18 +18,20 @@ export const GlobalSettings = styled.div`
   background: ${({ theme }) => (theme.general.background)};
 `;
 
-const Root = () => (
+const App = () => (
   <ThemeProvider theme={DefaultTheme}>
     <Router>
       <GlobalSettings>
-        <Route
-          exact
-          path={routes.LANDING}
-          component={LandingPage}
-        />
+        <Header />
+        <Switch>
+          <Route exact path={routes.LANDING} component={LandingPage} />
+          <Route path={routes.SIGN_UP} component={SignUpPage} />
+          <Route path={routes.LOGIN} component={LoginPage} />
+          <Route component={NoMatch} />
+        </Switch>
       </GlobalSettings>
     </Router>
   </ThemeProvider>
 );
 
-export default Root;
+export default App;
