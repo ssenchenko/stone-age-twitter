@@ -3,17 +3,17 @@ import React from 'react';
 import renderer from 'react-test-renderer';
 import { ThemeProvider } from 'styled-components';
 
-import { HeaderBase } from '../Header';
 import DefaultTheme from '../../settings/themes';
+import NavButton from '../NavButton';
 
-const historyMock = { push: jest.fn() };
+const onClick = jest.fn();
 
-describe('HeaderBase', () => {
+describe('NavButton', () => {
   it('renders correctly', () => {
     const tree = renderer
       .create(
         <ThemeProvider theme={DefaultTheme}>
-          <HeaderBase history={historyMock} />
+          <NavButton name="Test" onClickFunc={onClick} />
         </ThemeProvider>,
       )
       .toJSON();

@@ -1,0 +1,65 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NotLoggedNavBar renders correctly 1`] = `
+.c1 {
+  border: none;
+  outline: none;
+  background: #ffffff;
+  padding: 15px 32px;
+  text-align: center;
+  -webkit-text-decoration: none;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+
+.c1:hover {
+  color: lightgreen;
+}
+
+.c0 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-flow: row wrap;
+  -ms-flex-flow: row wrap;
+  flex-flow: row wrap;
+  -webkit-box-pack: space-around;
+  -webkit-justify-content: space-around;
+  -ms-flex-pack: space-around;
+  justify-content: space-around;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  position: relative;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%,-50%);
+  -ms-transform: translate(-50%,-50%);
+  transform: translate(-50%,-50%);
+}
+
+<div
+  className="c0"
+  display="flex"
+>
+  <button
+    className="c1"
+    onClick={[MockFunction]}
+  >
+    Login
+  </button>
+  <button
+    className="c1"
+    onClick={[MockFunction]}
+  >
+    Sign Up
+  </button>
+</div>
+`;

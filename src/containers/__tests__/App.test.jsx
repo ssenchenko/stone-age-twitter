@@ -8,7 +8,7 @@ import DefaultTheme from '../../settings/themes';
 
 describe('Global settings css rules contain', () => {
   let tree;
-  const theme = DefaultTheme.general;
+  const theme = DefaultTheme;
   beforeAll(() => {
     tree = renderer
       .create(<GlobalSettings theme={DefaultTheme} />)

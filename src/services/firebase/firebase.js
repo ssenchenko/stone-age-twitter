@@ -20,6 +20,8 @@ const firebaseApp = (() => {
 
     doSignInWithEmailAndPassword: (email, password) => (
       auth.signInWithEmailAndPassword(email, password)),
+
+    doSignOut: () => auth.signOut(),
   };
 })();
 

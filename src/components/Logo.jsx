@@ -2,10 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 
 const LogoStyled = styled.h1`
-  color: #3f9b41;
+  color: darkgreen;
   font-weight: bold;
-  font-size: x-large;
-  margin-left: 20px;
+  font-size: 32px;
 `;
 
 const Logo = () => (

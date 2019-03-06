@@ -3,17 +3,17 @@ import React from 'react';
 import renderer from 'react-test-renderer';
 import { ThemeProvider } from 'styled-components';
 
-import { HeaderBase } from '../Header';
+import NotLoggedNavBar from '../NotLoggedNavBar';
 import DefaultTheme from '../../settings/themes';
 
-const historyMock = { push: jest.fn() };
+const onClick = jest.fn();
 
-describe('HeaderBase', () => {
+describe('NotLoggedNavBar', () => {
   it('renders correctly', () => {
     const tree = renderer
       .create(
         <ThemeProvider theme={DefaultTheme}>
-          <HeaderBase history={historyMock} />
+          <NotLoggedNavBar visible onSignUpClick={onClick} onLoginClick={onClick} />
         </ThemeProvider>,
       )
       .toJSON();

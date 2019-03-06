@@ -2,10 +2,9 @@
 
 exports[`Logo renders correctly 1`] = `
 .c0 {
-  color: #3f9b41;
+  color: darkgreen;
   font-weight: bold;
-  font-size: x-large;
-  margin-left: 20px;
+  font-size: 32px;
 }
 
 <h1
