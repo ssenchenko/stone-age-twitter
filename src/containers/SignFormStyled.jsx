@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const FormStyled = styled.div`
+export const FormStyled = styled.form`
   display: flex;
   flex-flow: column nowrap;
 
@@ -18,4 +18,8 @@ export const ButtonHolderStyled = styled.div`
 
 export const FieldsetStyled = styled.fieldset`
   padding: 15px;
+`;
+
+export const FormError = styled.p`
+  color: red;
 `;

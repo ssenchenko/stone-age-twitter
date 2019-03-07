@@ -1,9 +1,16 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
-const LandingPage = () => (
-  <div>
-    <p>Hello World!</p>
-  </div>
-);
+import SessionContext from '../../services/session';
+
+const LandingPage = () => {
+  const authUser = useContext(SessionContext);
+
+  return (
+    <div>
+      {authUser && <p>You are logged</p>}
+      <p>Hello World!</p>
+    </div>
+  );
+};
 
 export default LandingPage;

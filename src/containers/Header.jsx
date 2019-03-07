@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import ReactRouterPropTypes from 'react-router-prop-types';
 import styled from 'styled-components';
 import { withRouter } from 'react-router-dom';
 
 import Logo from '../components/Logo';
 import NotLoggedNavBar from './NotLoggedNavBar';
+import LoggedNavBar from './LoggedNavBar';
 import ErrorBoundary from './ErrorBoundary';
 import * as routes from '../settings/routes';
+import SessionContext from '../services/session';
+import FirebaseContext from '../services/firebase';
 
 const HeaderStyled = styled.header`
   position: sticky;
@@ -35,14 +38,21 @@ const NavBar = styled.div`
   flex: 1{/*flex-grow = 1*/};
 `;
 
-const HeaderBase = ({ history }) => {
+const HeaderBase = ({ history, location }) => {
+  const firebase = useContext(FirebaseContext);
+  const authUser = useContext(SessionContext);
+
   const goToLogin = () => {
     history.push(routes.LOGIN);
   };
-
   const goToSignUp = () => {
     history.push(routes.SIGN_UP);
   };
+  const onSignOut = async () => {
+    await firebase.doSignOut();
+  };
+
+  const showNavBar = (location.pathname === routes.LANDING);
 
   return (
     <HeaderStyled>
@@ -50,17 +60,23 @@ const HeaderBase = ({ history }) => {
         <Logo />
       </LogoWrapper>
       <PlaceHolder />
-      <NavBar>
-        <ErrorBoundary>
-          <NotLoggedNavBar visible onLoginClick={goToLogin} onSignUpClick={goToSignUp} />
-        </ErrorBoundary>
-      </NavBar>
+      {showNavBar && (
+        <NavBar>
+          <ErrorBoundary>
+            {authUser
+              ? <LoggedNavBar visible onSignOutClick={onSignOut} />
+              : <NotLoggedNavBar visible onLoginClick={goToLogin} onSignUpClick={goToSignUp} />
+            }
+          </ErrorBoundary>
+        </NavBar>
+      )}
     </HeaderStyled>
   );
 };
 
 HeaderBase.propTypes = {
   history: ReactRouterPropTypes.history.isRequired,
+  location: ReactRouterPropTypes.location.isRequired,
 };
 
 const Header = withRouter(HeaderBase);

@@ -1,9 +1,12 @@
 import React from 'react';
 
+import LoginForm from '../LoginForm';
+import ErrorBoundary from '../ErrorBoundary';
+
 const LoginPage = () => (
-  <div>
-    <p>Login here</p>
-  </div>
+  <ErrorBoundary>
+    <LoginForm />
+  </ErrorBoundary>
 );
 
 export default LoginPage;

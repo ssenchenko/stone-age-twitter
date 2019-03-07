@@ -9,54 +9,33 @@ import * as utils from '../utils';
 import FirebaseContext from '../services/firebase';
 import * as routes from '../settings/routes';
 
+// TODO: after 3 unsuccessful logins send email link -- should be done with Cloud functions, not now
 
-const SignUpFormBase = ({ history }) => {
-  const [userName, setUserName] = useState(utils.initialInputState);
-  const handleUserNameChange = (target) => {
-    utils.handleInputChange(target, setUserName, 'Invalid symbols in User name');
-  };
-
+const LoginFormBase = ({ history }) => {
   const [email, setEmail] = useState(utils.initialInputState);
   const handleEmailChange = (target) => {
     utils.handleInputChange(target, setEmail, "Doesn't look like valid email");
   };
 
   const [password, setPassword] = useState(utils.initialInputState);
-  const [passwVerify, setPasswVerify] = useState(utils.initialInputState);
   const handlePasswordChange = (target) => {
     utils.handleInputChange(target, setPassword, 'Bad choice for password');
-    setPasswVerify((prevState) => {
-      const isValid = prevState.valid && (prevState.value === target.value);
-      const updatedState = {
-        valid: isValid,
-        errorMessage: isValid ? '' : "Doesn't match your password",
-      };
-      return { ...prevState, ...updatedState };
-    });
-  };
-  const handlePasswVerifyChange = (target) => {
-    utils.handleInputChange(
-      target,
-      setPasswVerify,
-      "Doesn't match your password",
-      value => (value === password.value),
-    );
   };
 
-  const isAllInputValid = userName.valid && email.valid && password.valid && passwVerify.valid;
+  const isAllInputValid = email.valid && password.valid;
 
   const firebase = useContext(FirebaseContext);
   const [firebaseException, setFirebaseException] = useState('');
   const handleSubmit = (event) => {
     firebase
-      .doCreateUserWithEmailAndPassword(email.value, password.value)
+      .doSignInWithEmailAndPassword(email.value, password.value)
       .then(() => {
         setFirebaseException('');
         history.push(routes.LANDING);
       })
       .catch((error) => {
         switch (error.code) {
-          case 'auth/weak-password':
+          case 'auth/wrong-password':
             setPassword((prevState) => {
               const updatedState = {
                 valid: false,
@@ -66,7 +45,7 @@ const SignUpFormBase = ({ history }) => {
             });
             break;
           case 'auth/invalid-email':
-          case 'auth/email-already-in-use':
+          case 'auth/user-not-found':
             setEmail((prevState) => {
               const updatedState = {
                 valid: false,
@@ -86,15 +65,7 @@ const SignUpFormBase = ({ history }) => {
     <FormStyled onSubmit={handleSubmit}>
       {(firebaseException) && <FormError>firebaseException</FormError>}
       <FieldsetStyled>
-        <legend>Please Sign Up</legend>
-        <CustomInput
-          name="User name"
-          value={userName.value}
-          onChangeFunc={handleUserNameChange}
-          valid={userName.valid}
-          errorMessage={userName.errorMessage}
-          required
-        />
+        <legend>Please Login</legend>
         <CustomInput
           type="email"
           name="email"
@@ -113,26 +84,17 @@ const SignUpFormBase = ({ history }) => {
           errorMessage={password.errorMessage}
           required
         />
-        <CustomInput
-          type="password"
-          name="Password again"
-          value={passwVerify.value}
-          onChangeFunc={handlePasswVerifyChange}
-          valid={passwVerify.valid}
-          errorMessage={passwVerify.errorMessage}
-          required
-        />
         <SubmitButton disabled={!isAllInputValid} />
       </FieldsetStyled>
     </FormStyled>
   );
 };
 
-SignUpFormBase.propTypes = {
+LoginFormBase.propTypes = {
   history: ReactRouterPropTypes.history.isRequired,
 };
 
-const SignUpForm = withRouter(SignUpFormBase);
+const SignUpForm = withRouter(LoginFormBase);
 
 export default SignUpForm;
-export { SignUpFormBase };
+export { LoginFormBase };

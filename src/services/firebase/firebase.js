@@ -22,6 +22,9 @@ const firebaseApp = (() => {
       auth.signInWithEmailAndPassword(email, password)),
 
     doSignOut: () => auth.signOut(),
+
+    onAuthStateChange: (nextOrObserver, error, completed) => (
+      auth.onAuthStateChanged(nextOrObserver, error, completed)),
   };
 })();
 

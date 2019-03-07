@@ -28,7 +28,10 @@ class ErrorBoundary extends Component {
   // eslint-disable-next-line no-unused-vars
   static getDerivedStateFromError(error) {
     // Update state so the next render will show the fallback UI.
-    return { hasError: true };
+    return {
+      hasError: true,
+      message: error.message,
+    };
   }
 
   componentDidCatch(error, info) {
@@ -36,11 +39,13 @@ class ErrorBoundary extends Component {
   }
 
   render() {
-    const { hasError } = this.state;
+    const { hasError, message } = this.state;
     if (hasError) {
       return (
         <ErrorMessageStyled>
           Something went wrong.
+          <br />
+          {message}
         </ErrorMessageStyled>
       );
     }

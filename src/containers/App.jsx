@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import styled, { ThemeProvider } from 'styled-components';
 
 import DefaultTheme from '../settings/themes';
-import firebaseApp, { FirebaseContext } from '../services/firebase/index';
+import FirebaseContext, { firebaseApp } from '../services/firebase';
+import SessionContext from '../services/session';
 import Header from './Header';
 import LandingPage from './screens/Landing';
 import SignUpPage from './screens/SignUp';
@@ -19,22 +20,34 @@ export const GlobalSettings = styled.div`
   background: ${({ theme }) => (theme.background)};
 `;
 
-const App = () => (
-  <ThemeProvider theme={DefaultTheme}>
-    <Router>
-      <GlobalSettings>
-        <FirebaseContext.Provider value={firebaseApp}>
-          <Header />
-          <Switch>
-            <Route exact path={routes.LANDING} component={LandingPage} />
-            <Route path={routes.SIGN_UP} component={SignUpPage} />
-            <Route path={routes.LOGIN} component={LoginPage} />
-            <Route component={NoMatch} />
-          </Switch>
-        </FirebaseContext.Provider>
-      </GlobalSettings>
-    </Router>
-  </ThemeProvider>
-);
+const App = () => {
+  const [authUser, setAuthUser] = useState(null);
+  useEffect(() => {
+    const listener = firebaseApp.onAuthStateChange(firebaseAuthUser => (
+      firebaseAuthUser ? setAuthUser(firebaseAuthUser) : setAuthUser(null)
+    ));
+    return (() => { listener(); });
+  });
+
+  return (
+    <FirebaseContext.Provider value={firebaseApp}>
+      <SessionContext.Provider value={authUser}>
+        <ThemeProvider theme={DefaultTheme}>
+          <Router>
+            <GlobalSettings>
+              <Header />
+              <Switch>
+                <Route exact path={routes.LANDING} component={LandingPage} />
+                <Route path={routes.SIGN_UP} component={SignUpPage} />
+                <Route path={routes.LOGIN} component={LoginPage} />
+                <Route component={NoMatch} />
+              </Switch>
+            </GlobalSettings>
+          </Router>
+        </ThemeProvider>
+      </SessionContext.Provider>
+    </FirebaseContext.Provider>
+  );
+};
 
 export default App;
