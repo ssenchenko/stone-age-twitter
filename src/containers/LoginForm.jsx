@@ -1,12 +1,14 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import ReactRouterPropTypes from 'react-router-prop-types';
 
-import { FormStyled, FieldsetStyled, FormError } from './SignFormStyled';
+import {
+  FormCenteredStyled, FieldsetStyled, FormError, ButtonHolderStyled,
+} from './FormStyled';
 import SubmitButton from '../components/SubmitButton';
 import CustomInput from '../components/CustomInput';
 import * as utils from '../utils';
-import FirebaseContext from '../services/firebase';
+import firebaseApp from '../services/firebase';
 import * as routes from '../settings/routes';
 
 // TODO: after 3 unsuccessful logins send email link -- should be done with Cloud functions, not now
@@ -24,10 +26,9 @@ const LoginFormBase = ({ history }) => {
 
   const isAllInputValid = email.valid && password.valid;
 
-  const firebase = useContext(FirebaseContext);
   const [firebaseException, setFirebaseException] = useState('');
   const handleSubmit = (event) => {
-    firebase
+    firebaseApp
       .doSignInWithEmailAndPassword(email.value, password.value)
       .then(() => {
         setFirebaseException('');
@@ -62,7 +63,7 @@ const LoginFormBase = ({ history }) => {
   };
 
   return (
-    <FormStyled onSubmit={handleSubmit}>
+    <FormCenteredStyled onSubmit={handleSubmit}>
       {(firebaseException) && <FormError>firebaseException</FormError>}
       <FieldsetStyled>
         <legend>Please Login</legend>
@@ -84,9 +85,11 @@ const LoginFormBase = ({ history }) => {
           errorMessage={password.errorMessage}
           required
         />
-        <SubmitButton disabled={!isAllInputValid} />
+        <ButtonHolderStyled>
+          <SubmitButton disabled={!isAllInputValid} />
+        </ButtonHolderStyled>
       </FieldsetStyled>
-    </FormStyled>
+    </FormCenteredStyled>
   );
 };
 

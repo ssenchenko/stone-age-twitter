@@ -3,7 +3,9 @@ import styled from 'styled-components';
 export const FormStyled = styled.form`
   display: flex;
   flex-flow: column nowrap;
+`;
 
+export const FormCenteredStyled = styled(FormStyled)`
   position: absolute;
   top: 50%;
   left: 50%;

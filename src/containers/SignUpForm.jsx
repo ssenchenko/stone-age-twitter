@@ -1,12 +1,14 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import ReactRouterPropTypes from 'react-router-prop-types';
 
-import { FormStyled, FieldsetStyled, FormError } from './SignFormStyled';
+import {
+ FormCenteredStyled, FieldsetStyled, FormError, ButtonHolderStyled 
+} from './FormStyled';
 import SubmitButton from '../components/SubmitButton';
 import CustomInput from '../components/CustomInput';
 import * as utils from '../utils';
-import FirebaseContext from '../services/firebase';
+import firebaseApp from '../services/firebase';
 import * as routes from '../settings/routes';
 
 
@@ -45,14 +47,20 @@ const SignUpFormBase = ({ history }) => {
 
   const isAllInputValid = userName.valid && email.valid && password.valid && passwVerify.valid;
 
-  const firebase = useContext(FirebaseContext);
   const [firebaseException, setFirebaseException] = useState('');
   const handleSubmit = (event) => {
-    firebase
+    firebaseApp
       .doCreateUserWithEmailAndPassword(email.value, password.value)
       .then(() => {
         setFirebaseException('');
-        history.push(routes.LANDING);
+        firebaseApp
+          .doUpdateUserProfile({ displayName: userName.value })
+          .then(() => {
+            history.push(routes.LANDING);
+          })
+          .catch((error) => {
+            setFirebaseException(error.message);
+          });
       })
       .catch((error) => {
         switch (error.code) {
@@ -83,7 +91,7 @@ const SignUpFormBase = ({ history }) => {
   };
 
   return (
-    <FormStyled onSubmit={handleSubmit}>
+    <FormCenteredStyled onSubmit={handleSubmit}>
       {(firebaseException) && <FormError>firebaseException</FormError>}
       <FieldsetStyled>
         <legend>Please Sign Up</legend>
@@ -122,9 +130,11 @@ const SignUpFormBase = ({ history }) => {
           errorMessage={passwVerify.errorMessage}
           required
         />
-        <SubmitButton disabled={!isAllInputValid} />
+        <ButtonHolderStyled>
+          <SubmitButton disabled={!isAllInputValid} />
+        </ButtonHolderStyled>
       </FieldsetStyled>
-    </FormStyled>
+    </FormCenteredStyled>
   );
 };
 

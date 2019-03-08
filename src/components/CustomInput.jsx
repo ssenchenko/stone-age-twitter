@@ -23,7 +23,7 @@ const chooseValue = (param, valueForTrue, valueForFalse, valueForDefault) => {
 const InputStyled = styled.input`
   background-color: ${({ valid }) => (chooseValue(valid, 'lightgreen', 'pink', 'inherit'))};
   border-color: ${({ valid }) => (chooseValue(valid, 'darkgreen', 'darkred', 'inherit'))};
-  border-width: ${({ required }) => (required ? '2px' : 'inherit')};
+  border-width: '2px';
 `;
 
 const ContainerStyled = styled.div`
@@ -38,16 +38,17 @@ const ContainerStyled = styled.div`
 `;
 
 const CustomInput = ({
-  type, name, value, required, onChangeFunc, valid, errorMessage,
+  type, name, value, required, onChangeFunc, valid, errorMessage, Container,
 }) => {
   const id = name.replace(/(^\s+|\s+$)/g, '').replace(/\s+/g, '_').toLowerCase();
   const handleChange = event => (
     onChangeFunc(event.target)
   );
   return (
-    <ContainerStyled>
+    <Container>
       <label htmlFor={id}>
         {name}
+        {required && '*'}
         &nbsp;&nbsp;
       </label>
       <InputStyled
@@ -59,7 +60,7 @@ const CustomInput = ({
         valid={valid}
       />
       <ErrorMessageStyled valid={valid}>{errorMessage}</ErrorMessageStyled>
-    </ContainerStyled>
+    </Container>
   );
 };
 
@@ -71,12 +72,14 @@ CustomInput.propTypes = {
   valid: PropTypes.bool, // can be null || true || false; null works for before validation state
   onChangeFunc: PropTypes.func.isRequired,
   errorMessage: PropTypes.string.isRequired,
+  Container: PropTypes.object, // eslint-disable-line react/forbid-prop-types
 };
 
 CustomInput.defaultProps = {
   type: 'text',
   required: false,
   valid: null,
+  Container: ContainerStyled,
 };
 
 export default CustomInput;

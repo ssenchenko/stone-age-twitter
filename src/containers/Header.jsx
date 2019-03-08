@@ -9,7 +9,7 @@ import LoggedNavBar from './LoggedNavBar';
 import ErrorBoundary from './ErrorBoundary';
 import * as routes from '../settings/routes';
 import SessionContext from '../services/session';
-import FirebaseContext from '../services/firebase';
+import firebaseApp from '../services/firebase';
 
 const HeaderStyled = styled.header`
   position: sticky;
@@ -39,7 +39,6 @@ const NavBar = styled.div`
 `;
 
 const HeaderBase = ({ history, location }) => {
-  const firebase = useContext(FirebaseContext);
   const authUser = useContext(SessionContext);
 
   const goToLogin = () => {
@@ -49,7 +48,7 @@ const HeaderBase = ({ history, location }) => {
     history.push(routes.SIGN_UP);
   };
   const onSignOut = async () => {
-    await firebase.doSignOut();
+    await firebaseApp.doSignOut();
   };
 
   const showNavBar = (location.pathname === routes.LANDING);
@@ -64,7 +63,7 @@ const HeaderBase = ({ history, location }) => {
         <NavBar>
           <ErrorBoundary>
             {authUser
-              ? <LoggedNavBar visible onSignOutClick={onSignOut} />
+              ? <LoggedNavBar visible onSignOutClick={onSignOut} userName={authUser.displayName} />
               : <NotLoggedNavBar visible onLoginClick={goToLogin} onSignUpClick={goToSignUp} />
             }
           </ErrorBoundary>

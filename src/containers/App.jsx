@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import styled, { ThemeProvider } from 'styled-components';
 
 import DefaultTheme from '../settings/themes';
-import FirebaseContext, { firebaseApp } from '../services/firebase';
+import firebaseApp from '../services/firebase';
 import SessionContext from '../services/session';
 import Header from './Header';
 import LandingPage from './screens/Landing';
@@ -30,23 +30,21 @@ const App = () => {
   });
 
   return (
-    <FirebaseContext.Provider value={firebaseApp}>
-      <SessionContext.Provider value={authUser}>
-        <ThemeProvider theme={DefaultTheme}>
-          <Router>
-            <GlobalSettings>
-              <Header />
-              <Switch>
-                <Route exact path={routes.LANDING} component={LandingPage} />
-                <Route path={routes.SIGN_UP} component={SignUpPage} />
-                <Route path={routes.LOGIN} component={LoginPage} />
-                <Route component={NoMatch} />
-              </Switch>
-            </GlobalSettings>
-          </Router>
-        </ThemeProvider>
-      </SessionContext.Provider>
-    </FirebaseContext.Provider>
+    <SessionContext.Provider value={authUser}>
+      <ThemeProvider theme={DefaultTheme}>
+        <Router>
+          <GlobalSettings>
+            <Header />
+            <Switch>
+              <Route exact path={routes.LANDING} component={LandingPage} />
+              <Route path={routes.SIGN_UP} component={SignUpPage} />
+              <Route path={routes.LOGIN} component={LoginPage} />
+              <Route component={NoMatch} />
+            </Switch>
+          </GlobalSettings>
+        </Router>
+      </ThemeProvider>
+    </SessionContext.Provider>
   );
 };
 

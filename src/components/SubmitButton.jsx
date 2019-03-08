@@ -8,7 +8,7 @@ const SubmitButton = styled.input.attrs({
   display: inline-block;
   padding: 8px;
   margin: 10px 0;
-  width: 100%;
+  width: 70%;
 
   outline: none;
   background: lightgray;

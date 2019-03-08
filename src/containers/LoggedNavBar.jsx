@@ -18,22 +18,27 @@ const NavBarStyled = styled.div`
   transform: translate(-50%, -50%);
 `;
 
-const NotLoggedNavBar = ({ visible, onSignOutClick }) => {
+const LoggedNavBar = ({ visible, onSignOutClick, userName }) => {
   const display = visible ? 'flex' : 'none';
   return (
     <NavBarStyled display={display}>
+      <h2>
+        Hello,&nbsp;
+        {userName}
+      </h2>
       <NavButton name="SignOut" onClickFunc={onSignOutClick} />
     </NavBarStyled>
   );
 };
 
-NotLoggedNavBar.propTypes = {
+LoggedNavBar.propTypes = {
   visible: PropTypes.bool,
   onSignOutClick: PropTypes.func.isRequired,
+  userName: PropTypes.string.isRequired,
 };
 
-NotLoggedNavBar.defaultProps = {
+LoggedNavBar.defaultProps = {
   visible: false,
 };
 
-export default NotLoggedNavBar;
+export default LoggedNavBar;
