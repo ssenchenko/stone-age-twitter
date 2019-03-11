@@ -1,4 +1,3 @@
-import * as firebase from 'firebase';
 import app from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/storage';
@@ -43,7 +42,7 @@ const firebaseApp = (() => {
         authorName: inAuthorName,
         articleName: inArticleName,
         description: inDescription,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        timestamp: app.firestore.FieldValue.serverTimestamp(),
       })
     ),
 
@@ -54,9 +53,13 @@ const firebaseApp = (() => {
       })
     ),
 
-    doDeletePost: async (postRef) => {
-      await postRef.delete();
-    },
+    doDeletePost: (postRef) => { postRef.delete(); },
+
+    doQueryLastPosts: numberOfPosts => (
+      db.collection('posts')
+        .orderBy('timestamp', 'desc')
+        .limit(numberOfPosts)
+    ),
   };
 })();
 

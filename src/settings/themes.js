@@ -6,6 +6,7 @@ const DefaultTheme = {
   fontSize: '14px',
   lineHeight: '1.43',
   activeColor: 'lightgreen',
+  feedWidth: '60%',
 };
 
 export default DefaultTheme;

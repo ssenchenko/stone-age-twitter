@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import ReactRouterPropTypes from 'react-router-prop-types';
 
 import {
- FormCenteredStyled, FieldsetStyled, FormError, ButtonHolderStyled 
+  FormCenteredStyled, FieldsetStyled, FormError, ButtonHolderStyled,
 } from './FormStyled';
 import SubmitButton from '../components/SubmitButton';
 import CustomInput from '../components/CustomInput';
@@ -52,6 +52,7 @@ const SignUpFormBase = ({ history }) => {
     firebaseApp
       .doCreateUserWithEmailAndPassword(email.value, password.value)
       .then(() => {
+        // TODO: impose username uniqueness
         setFirebaseException('');
         firebaseApp
           .doUpdateUserProfile({ displayName: userName.value })

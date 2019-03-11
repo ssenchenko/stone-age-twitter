@@ -14,9 +14,15 @@ const FieldSetStyled = styled.fieldset`
   border-radius: 20px;
 `;
 
+const LegendStyled = styled.legend`
+  position: relative;
+  margin-left: 30px;
+  padding: 5px 10px;
+`;
+
 const WithWidthFormStyled = styled(FormStyled)`
-  width: 60%;
-  margin: auto;
+  width: ${({ theme }) => (theme.feedWidth)};
+  margin: 0 auto 10px auto;
 `;
 
 const ContainerStyled = styled.div`
@@ -86,7 +92,7 @@ const PostForm = () => {
             // 3) update post with file url
             .then(url => (
               firebaseApp.doCompletePost(postRef, url, fileSnapshot.metadata.fullPath)
-            )));
+            ))); // FIXME: don't create a post if file uploading failed
       })
       .catch((error) => { setFirebaseException(error.message); });
     event.preventDefault();
@@ -96,7 +102,7 @@ const PostForm = () => {
     <WithWidthFormStyled onSubmit={onSubmit}>
       {(firebaseException) && <FormError>firebaseException</FormError>}
       <FieldSetStyled>
-        <legend>Post a new article</legend>
+        <LegendStyled>Post a new article</LegendStyled>
         <CustomInput
           type="text"
           name="Article name"
