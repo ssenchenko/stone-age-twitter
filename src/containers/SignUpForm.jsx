@@ -7,7 +7,7 @@ import {
 } from './FormStyled';
 import SubmitButton from '../components/SubmitButton';
 import CustomInput from '../components/CustomInput';
-import * as utils from '../utils';
+import * as utils from './utils';
 import firebaseApp from '../services/firebase';
 import * as routes from '../settings/routes';
 

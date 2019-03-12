@@ -11,28 +11,42 @@ const FeedStyled = styled.div`
   margin: auto;
 `;
 
+const mapToArray = (map, callback) => {
+  const array = [];
+  // eslint-disable-next-line no-restricted-syntax
+  for (const [key, value] of map.entries()) {
+    array.push(callback(key, value));
+  }
+  return array;
+};
+
 const Feed = ({ data }) => (
   <FeedStyled>
-    {data && data.length
-      ? data.map(dataItem => (
-        <Post {...dataItem} />))
+    {data && data.size
+      ? mapToArray(data, (key, value) => (
+        <Post key={key} {...value} />))
       : <p>Loading...</p>
     }
   </FeedStyled>
 );
 
 Feed.propTypes = {
-  data: PropTypes.arrayOf(
-    PropTypes.shape({
-      authorId: PropTypes.string.isRequired,
-      authorName: PropTypes.string.isRequired,
-      articleName: PropTypes.string.isRequired,
-      description: PropTypes.string,
-      timestamp: PropTypes.instanceOf(Date).isRequired,
-      url: PropTypes.string, // could've failed to upload
-      key: PropTypes.string,
-    }),
-  ).isRequired,
+  data: PropTypes.instanceOf(Map).isRequired,
+  // if PropTypes.mapOf was available, it'd be look like
+  // data: PropTypes.arrayOf(
+  //     key: PropTypes.string,
+  //     value: PropTypes.shape({
+  //       authorId: PropTypes.string.isRequired,
+  //       authorName: PropTypes.string.isRequired,
+  //       articleName: PropTypes.string.isRequired,
+  //       description: PropTypes.string,
+  //       timestamp: PropTypes.instanceOf(Date).isRequired,
+  //       url: PropTypes.string, // could've failed to upload
+  //       postId: PropTypes.string,
+  //       onLikeClicked: PropTypes.func,
+  //       isLiked: PropTypes.bool,
+  //     }),
+  //   ).isRequired,
 };
 
 export default Feed;

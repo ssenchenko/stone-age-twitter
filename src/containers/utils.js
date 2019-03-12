@@ -1,5 +1,3 @@
-/* eslint-disable no-restricted-syntax */
-
 export const initialInputState = {
   value: '',
   valid: null,

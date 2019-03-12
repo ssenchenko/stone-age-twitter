@@ -2,7 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-const PostStyled = styled.li`
+import LikeButton from './LikeButton';
+
+const PostStyled = styled.div`
   border: 1px solid lightgray;
   border-radius: 20px;
 
@@ -92,25 +94,43 @@ Description.defaultProps = {
 };
 
 const Post = ({
-  authorName, articleName, description, url,
+  postId, authorName, articleName, description, url, isLiked, onLikeClicked,
 }) => {
   console.log(authorName, articleName);
+
+  const likeButtonProps = isLiked
+    ? { color: 'red', title: 'You like it' }
+    : { color: 'lightgray', title: 'Like it!' };
+
+  const handleLikeClick = () => {
+    // this function will change isLiked which will trigger new render
+    onLikeClicked(postId, !isLiked);
+  };
+
   const innerComponentMargin = '10px 0';
   return (
     <PostStyled margin="0 0 10px 0">
       <H4Styled margin="0">{authorName}</H4Styled>
       <PStyled margin="0">posted</PStyled>
       <ArticleName name={articleName} url={url} margin={innerComponentMargin} />
+      <LikeButton
+        color={likeButtonProps.color}
+        title={likeButtonProps.title}
+        onClickFunc={handleLikeClick}
+      />
       <Description description={description} margin={innerComponentMargin} />
     </PostStyled>
   );
 };
 
 Post.propTypes = {
+  postId: PropTypes.string.isRequired,
   authorName: PropTypes.string.isRequired,
   articleName: PropTypes.string.isRequired,
   description: PropTypes.string,
   url: PropTypes.string,
+  onLikeClicked: PropTypes.func.isRequired,
+  isLiked: PropTypes.bool.isRequired,
 };
 
 Post.defaultProps = {

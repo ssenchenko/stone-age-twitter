@@ -5,7 +5,7 @@ import { FormStyled, ButtonHolderStyled, FormError } from './FormStyled';
 import CustomInput from '../components/CustomInput';
 import SubmitButton from '../components/SubmitButton';
 import firebaseApp from '../services/firebase';
-import * as utils from '../utils';
+import * as utils from './utils';
 import SessionContext from '../services/session';
 
 const FieldSetStyled = styled.fieldset`
