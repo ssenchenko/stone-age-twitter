@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import Post from '../components/Post';
 
 const FeedStyled = styled.div`
+  margin-top: 10px;
   display: flex;
   flex-flow: column nowrap;
   width: ${({ theme }) => (theme.feedWidth)};
@@ -20,11 +21,11 @@ const mapToArray = (map, callback) => {
   return array;
 };
 
-const Feed = ({ data }) => (
+const Feed = ({ data, onLikeClicked }) => (
   <FeedStyled>
     {data && data.size
       ? mapToArray(data, (key, value) => (
-        <Post key={key} {...value} />))
+        <Post key={key} {...value} onLikeClicked={onLikeClicked} />))
       : <p>Loading...</p>
     }
   </FeedStyled>
@@ -32,7 +33,7 @@ const Feed = ({ data }) => (
 
 Feed.propTypes = {
   data: PropTypes.instanceOf(Map).isRequired,
-  // if PropTypes.mapOf was available, it'd be look like
+  // if PropTypes.mapOf was available, it'd look like
   // data: PropTypes.arrayOf(
   //     key: PropTypes.string,
   //     value: PropTypes.shape({
@@ -43,10 +44,10 @@ Feed.propTypes = {
   //       timestamp: PropTypes.instanceOf(Date).isRequired,
   //       url: PropTypes.string, // could've failed to upload
   //       postId: PropTypes.string,
-  //       onLikeClicked: PropTypes.func,
   //       isLiked: PropTypes.bool,
   //     }),
   //   ).isRequired,
+  onLikeClicked: PropTypes.func.isRequired,
 };
 
 export default Feed;

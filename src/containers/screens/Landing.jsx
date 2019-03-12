@@ -1,4 +1,6 @@
-import React, { useContext, useReducer, useLayoutEffect } from 'react';
+import React, {
+  useContext, useReducer, useEffect, useMemo,
+} from 'react';
 import styled from 'styled-components';
 
 import SessionContext from '../../services/session';
@@ -7,6 +9,7 @@ import Feed from '../Feed';
 import ErrorBoundary from '../ErrorBoundary';
 import firebaseApp from '../../services/firebase';
 import logger from '../../services/logger';
+import numberOfPostsToFetch from '../../settings/db';
 
 
 const PageContainerStyled = styled.div`
@@ -14,65 +17,132 @@ const PageContainerStyled = styled.div`
   flex-flow: column nowrap;
 `;
 
-const createModifiedPosts = (originalPosts, postIdToModify, isLiked) => {
+const createModifiedPosts = (originalPosts, likesToFetch) => {
+  /*
+    likesToFetch = [{
+      postId,
+      isLiked,
+      postLikeId
+    }]
+  */
   const updatedPosts = new Map(originalPosts);
-  const postToUpdate = updatedPosts.get(postIdToModify);
-  if (postToUpdate) {
-    postToUpdate.isLiked = isLiked;
+  if (likesToFetch.length > 0) {
+    likesToFetch.forEach((dataItem) => {
+      const postToUpdate = updatedPosts.get(dataItem.postId);
+      if (typeof postToUpdate !== 'undefined') {
+        postToUpdate.isLiked = dataItem.isLiked;
+        postToUpdate.postLikeId = dataItem.postLikeId;
+      }
+    });
+  } else { // clear all likes
+    updatedPosts.forEach((value, key) => {
+      updatedPosts.get(key).isLiked = false;
+      updatedPosts.get(key).postLikeId = '';
+    });
   }
   return updatedPosts;
 };
 
-const postsReducer = (posts, action) => {
+const postsReducer = (postsState, action) => {
+  let updatedPostsState = null;
+  let postsHasBeenFetchedOnce = true;
   switch (action.type) {
-    case 'merge':
-      return new Map([...action.newPosts, ...posts]);
-    case 'likeOrDislike':
-      return createModifiedPosts(posts, action.postId, action.isLiked);
+    case 'MERGE':
+      logger.debug('Merging posts');
+      postsHasBeenFetchedOnce = true;
+      updatedPostsState = {
+        posts: new Map([...action.newPosts, ...postsState.posts]),
+        postsHasBeenFetchedOnce,
+        shouldRefetchLikes: postsState.postsHasBeenFetchedOnce !== postsHasBeenFetchedOnce,
+      };
+      break;
+    case 'REFETCH_LIKES_IF_FETCHED':
+      logger.debug('Updating userId');
+      updatedPostsState = {
+        // if user changes after postsHasBeenFetchedOnce - need to refetch likes
+        shouldRefetchLikes: postsState.postsHasBeenFetchedOnce,
+      };
+      break;
+    case 'LIKE_OR_DISLIKE':
+      logger.debug('Updating likes');
+      updatedPostsState = {
+        posts: createModifiedPosts(postsState.posts, action.likesToFetch),
+        shouldRefetchLikes: false,
+      };
+      break;
     default:
       throw new Error(`Action type ${action.type} doesn't exist. 
-        Possible values are 'merge' and 'likeOrDislike'`);
+        Possible values are 'MERGE', 'REFETCH_LIKES_IF_FETCHED', and 'LIKE_OR_DISLIKE'`);
   }
+  return { ...postsState, ...updatedPostsState };
 };
 
 const LandingPage = () => {
+  const initialState = {
+    posts: new Map(),
+    postsHasBeenFetchedOnce: false,
+    shouldRefetchLikes: false,
+  };
+  const [postsState, dispatch] = useReducer(postsReducer, initialState);
+
   const authUser = useContext(SessionContext);
+  const userId = useMemo(() => {
+    dispatch({ type: 'REFETCH_LIKES_IF_FETCHED' });
+    return authUser ? authUser.uid : null;
+  }, [authUser]);
 
-  const [posts, dispatch] = useReducer(postsReducer, new Map());
-
-  const handlePostsChange = (fetchedPosts) => {
-    console.log('Merging new posts');
-    dispatch({ type: 'merge', newPosts: fetchedPosts });
-  };
-
+  // TODO: use Realtime Database for updating likes instead because of pricing policy
   const handleLikeChange = (postId, isLiked) => {
-    console.log('Updating likes');
-    dispatch({ type: 'likeOrDislike', postId, isLiked });
+    if (isLiked) {
+      logger.debug('Saving like');
+      const postTimestamp = postsState.posts.get(postId).timestamp;
+      firebaseApp.doLikePost(userId, postId, postTimestamp)
+        .then((postLikeRef) => {
+          const likesToFetch = [{
+            postId,
+            isLiked,
+            postLikeId: postLikeRef.id,
+          }];
+          dispatch({ type: 'LIKE_OR_DISLIKE', likesToFetch });
+          logger.debug(`Like Written to Firestore ${postLikeRef.id}`);
+        })
+        .catch((error) => { logger.error(error.message, ''); });
+    } else {
+      logger.debug('Removing like');
+      firebaseApp.doDislikePost(postsState.posts.get(postId).postLikeId)
+        .then(() => {
+          const likesToFetch = [{
+            postId,
+            isLiked,
+            postLikeId: '',
+          }];
+          dispatch({ type: 'LIKE_OR_DISLIKE', likesToFetch });
+          logger.debug(`Post ${postId} disliked`);
+        })
+        .catch((error) => { logger.error(error.message, ''); });
+    }
   };
 
-  const numberOfPostsInFeed = 12;
-  // TODO: refactor into useEffect()
-  useLayoutEffect(() => {
-    console.log('Did mount/Update');
-    const unsubscribe = firebaseApp.doQueryLastPosts(numberOfPostsInFeed)
+  useEffect(() => {
+    logger.debug('Query posts');
+    const unsubscribe = firebaseApp.doQueryLastPosts(numberOfPostsToFetch)
       .onSnapshot((querySnapshot) => {
         const fetchedPosts = new Map();
         const changedDocs = querySnapshot.docChanges();
-        console.log('# of changed Docs', changedDocs.length);
+        logger.debug('# of changed Docs', changedDocs.length);
         if (changedDocs.length > 0) {
           changedDocs.forEach((change) => {
             if (change.type === 'added') {
-              console.log('Fetch new changes');
+              logger.debug('Fetch new changes');
               fetchedPosts.set(change.doc.id, {
                 ...change.doc.data(),
                 postId: change.doc.id, // yes, again id, it's convenient. see Feed.jsx why
                 isLiked: false,
-                onLikeClicked: handleLikeChange,
               });
             }
           });
           if (fetchedPosts.size > 0) {
-            handlePostsChange(fetchedPosts);
+            dispatch({ type: 'MERGE', newPosts: fetchedPosts });
           }
         }
       },
@@ -80,11 +150,32 @@ const LandingPage = () => {
         logger.error(error, '');
       });
     return () => {
-      console.log('will unmount');
+      logger.debug('will unmount');
       unsubscribe();
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // without [] it's working here as an infinite loop
+  }, []);
+
+
+  useEffect(() => {
+    if (postsState.shouldRefetchLikes) {
+      logger.debug('Query likes');
+      firebaseApp.doQueryLikes(userId, numberOfPostsToFetch)
+        .get()
+        .then((querySnapshot) => {
+          const likesToFetch = [];
+          querySnapshot.forEach((doc) => {
+            const { postId } = doc.data();
+            likesToFetch.push({
+              postId,
+              isLiked: true,
+              postLikeId: doc.id,
+            });
+          });
+          dispatch({ type: 'LIKE_OR_DISLIKE', likesToFetch });
+        })
+        .catch((error) => { logger.error(error.message, ''); });
+    }
+  }, [postsState.shouldRefetchLikes, userId]);
 
   return (
     <PageContainerStyled>
@@ -95,7 +186,7 @@ const LandingPage = () => {
         </ErrorBoundary>
         )}
       <ErrorBoundary>
-        <Feed data={posts} />
+        <Feed data={postsState.posts} onLikeClicked={handleLikeChange} />
       </ErrorBoundary>
     </PageContainerStyled>
   );

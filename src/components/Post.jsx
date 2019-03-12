@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 import LikeButton from './LikeButton';
+import logger from '../services/logger';
 
 const PostStyled = styled.div`
   border: 1px solid lightgray;
@@ -33,7 +34,7 @@ const ArticleName = ({ name, url, margin }) => {
   return (
     url
       ? <ALinkStyled href={url} margin={margin}>{articleName}</ALinkStyled>
-      : <PStyled margin={margin}>{articleName}</PStyled>
+      : articleName
   );
 };
 
@@ -96,7 +97,7 @@ Description.defaultProps = {
 const Post = ({
   postId, authorName, articleName, description, url, isLiked, onLikeClicked,
 }) => {
-  console.log(authorName, articleName);
+  logger.debug(authorName, articleName);
 
   const likeButtonProps = isLiked
     ? { color: 'red', title: 'You like it' }

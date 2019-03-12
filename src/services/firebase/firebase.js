@@ -60,6 +60,24 @@ const firebaseApp = (() => {
         .orderBy('timestamp', 'desc')
         .limit(numberOfPosts)
     ),
+
+    doLikePost: (userId, postId, postTimestamp) => (
+      db.collection('likes').add({
+        userId, postId, postTimestamp,
+      })
+    ),
+
+    doQueryLikes: (userId, numberOfPosts) => (
+      db.collection('likes')
+        .where('userId', '==', userId)
+        .orderBy('postTimestamp', 'desc')
+        .limit(numberOfPosts)
+    ),
+
+    doDislikePost: (postLikeId) => {
+      const docRef = db.collection('likes').doc(postLikeId);
+      return docRef.delete();
+    },
   };
 })();
 

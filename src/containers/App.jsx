@@ -23,11 +23,13 @@ export const GlobalSettings = styled.div`
 const App = () => {
   const [authUser, setAuthUser] = useState(null);
   useEffect(() => {
-    const listener = firebaseApp.onAuthStateChange(firebaseAuthUser => (
-      firebaseAuthUser ? setAuthUser(firebaseAuthUser) : setAuthUser(null)
+    const unsubscribe = firebaseApp.onAuthStateChange(firebaseAuthUser => (
+      firebaseAuthUser
+        ? setAuthUser(firebaseAuthUser)
+        : setAuthUser(null)
     ));
-    return (() => { listener(); });
-  });
+    return (() => { unsubscribe(); });
+  }, []);
 
   return (
     <SessionContext.Provider value={authUser}>
