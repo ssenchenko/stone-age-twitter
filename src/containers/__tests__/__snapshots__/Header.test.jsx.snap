@@ -1,0 +1,66 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`HeaderBase renders correctly 1`] = `
+.c1 {
+  color: darkgreen;
+  font-weight: bold;
+  font-size: 32px;
+}
+
+.c0 {
+  position: -webkit-sticky;
+  position: sticky;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-flow: row wrap;
+  -ms-flex-flow: row wrap;
+  flex-flow: row wrap;
+  -webkit-box-pack: space-around;
+  -webkit-justify-content: space-around;
+  -ms-flex-pack: space-around;
+  justify-content: space-around;
+  -webkit-align-content: space-around;
+  -ms-flex-line-pack: space-around;
+  align-content: space-around;
+  font-weight: 600;
+  border-block-end: thin solid lightgreen;
+  margin-bottom: 10px;
+}
+
+.c2 {
+  -webkit-order: 2;
+  -ms-flex-order: 2;
+  order: 2;
+}
+
+<header
+  className="c0"
+>
+  <div
+    className=""
+  >
+    <a
+      aria-current="page"
+      className="active"
+      href="/"
+      onClick={[Function]}
+      style={
+        Object {
+          "textDecoration": "none",
+        }
+      }
+    >
+      <h1
+        className="c1"
+      >
+        Test
+      </h1>
+    </a>
+  </div>
+  <div
+    className="c2"
+  />
+</header>
+`;

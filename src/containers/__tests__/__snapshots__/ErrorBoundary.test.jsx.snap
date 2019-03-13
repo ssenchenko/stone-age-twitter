@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ErrorBoundary renders correctly 1`] = `
+.c0 {
+  color: #ef45ae;
+  font-weight: bold;
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%,-50%);
+  -ms-transform: translate(-50%,-50%);
+  transform: translate(-50%,-50%);
+}
+
+<h1
+  className="c0"
+>
+  Something went wrong.
+  <br />
+  Error is not a constructor
+</h1>
+`;

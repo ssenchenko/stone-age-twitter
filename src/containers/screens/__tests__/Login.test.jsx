@@ -1,19 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 
-import LandingPage from './Page';
+import LoginPage from '../Login';
 import DefaultTheme from '../../../settings/themes';
 
 test('Landing Page renders without crashing', () => {
   const div = document.createElement('div');
   ReactDOM.render(
-    <Router>
+    <MemoryRouter>
       <ThemeProvider theme={DefaultTheme}>
-        <LandingPage />
+        <LoginPage />
       </ThemeProvider>
-    </Router>, div,
+    </MemoryRouter>, div,
   );
   ReactDOM.unmountComponentAtNode(div);
 });
