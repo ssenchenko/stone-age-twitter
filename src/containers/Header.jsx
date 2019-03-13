@@ -21,6 +21,7 @@ const HeaderStyled = styled.header`
 
   font-weight: 600;
   border-block-end: thin solid lightgreen;
+  margin-bottom: 10px;
 `;
 
 const LogoWrapper = styled.div`

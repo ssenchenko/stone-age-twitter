@@ -7,50 +7,6 @@ exports[`HeaderBase renders correctly 1`] = `
   font-size: 32px;
 }
 
-.c5 {
-  border: none;
-  outline: none;
-  background: #ffffff;
-  padding: 15px 32px;
-  text-align: center;
-  -webkit-text-decoration: none;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-}
-
-.c5:hover {
-  color: lightgreen;
-}
-
-.c4 {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-flex-flow: row wrap;
-  -ms-flex-flow: row wrap;
-  flex-flow: row wrap;
-  -webkit-box-pack: space-around;
-  -webkit-justify-content: space-around;
-  -ms-flex-pack: space-around;
-  justify-content: space-around;
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  position: relative;
-  top: 50%;
-  left: 50%;
-  -webkit-transform: translate(-50%,-50%);
-  -ms-transform: translate(-50%,-50%);
-  transform: translate(-50%,-50%);
-}
-
 .c0 {
   position: -webkit-sticky;
   position: sticky;
@@ -70,6 +26,7 @@ exports[`HeaderBase renders correctly 1`] = `
   align-content: space-around;
   font-weight: 600;
   border-block-end: thin solid lightgreen;
+  margin-bottom: 10px;
 }
 
 .c2 {
@@ -78,47 +35,32 @@ exports[`HeaderBase renders correctly 1`] = `
   order: 2;
 }
 
-.c3 {
-  -webkit-order: 3;
-  -ms-flex-order: 3;
-  order: 3;
-}
-
 <header
   className="c0"
 >
   <div
     className=""
   >
-    <h1
-      className="c1"
+    <a
+      aria-current="page"
+      className="active"
+      href="/"
+      onClick={[Function]}
+      style={
+        Object {
+          "textDecoration": "none",
+        }
+      }
     >
-      Test
-    </h1>
+      <h1
+        className="c1"
+      >
+        Test
+      </h1>
+    </a>
   </div>
   <div
     className="c2"
   />
-  <div
-    className="c3"
-  >
-    <div
-      className="c4"
-      display="flex"
-    >
-      <button
-        className="c5"
-        onClick={[Function]}
-      >
-        Login
-      </button>
-      <button
-        className="c5"
-        onClick={[Function]}
-      >
-        Sign Up
-      </button>
-    </div>
-  </div>
 </header>
 `;

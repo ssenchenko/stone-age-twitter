@@ -10,6 +10,7 @@ import ErrorBoundary from '../ErrorBoundary';
 import firebaseApp from '../../services/firebase';
 import logger from '../../services/logger';
 import numberOfPostsToFetch from '../../settings/db';
+import { mergeMaps } from '../../utils';
 
 
 const PageContainerStyled = styled.div`
@@ -46,12 +47,18 @@ const createModifiedPosts = (originalPosts, likesToFetch) => {
 const postsReducer = (postsState, action) => {
   let updatedPostsState = null;
   let postsHasBeenFetchedOnce = true;
+  let newPosts = null;
   switch (action.type) {
     case 'MERGE':
       logger.debug('Merging posts');
       postsHasBeenFetchedOnce = true;
+      newPosts = mergeMaps(
+        postsState.posts,
+        action.newPosts,
+        (left, right) => ({ ...left, ...right }),
+      );
       updatedPostsState = {
-        posts: new Map([...action.newPosts, ...postsState.posts]),
+        posts: newPosts,
         postsHasBeenFetchedOnce,
         shouldRefetchLikes: postsState.postsHasBeenFetchedOnce !== postsHasBeenFetchedOnce,
       };
@@ -74,7 +81,8 @@ const postsReducer = (postsState, action) => {
       throw new Error(`Action type ${action.type} doesn't exist. 
         Possible values are 'MERGE', 'REFETCH_LIKES_IF_FETCHED', and 'LIKE_OR_DISLIKE'`);
   }
-  return { ...postsState, ...updatedPostsState };
+  const result = { ...postsState, ...updatedPostsState };
+  return result;
 };
 
 const LandingPage = () => {
@@ -132,7 +140,10 @@ const LandingPage = () => {
         logger.debug('# of changed Docs', changedDocs.length);
         if (changedDocs.length > 0) {
           changedDocs.forEach((change) => {
-            if (change.type === 'added') {
+            // because uploading and updating post with url takes time
+            // we need to subscribe for modified posts as well, otherwise
+            // link to the article is not available till nex page reload
+            if (change.type === 'added' || change.type === 'modified') {
               logger.debug('Fetch new changes');
               fetchedPosts.set(change.doc.id, {
                 ...change.doc.data(),
